@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "Development": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_APPLICATION": "book",
+        "ASPNETCORE_ENVIRONMENT": "development",
+        "APP_CONSUL": "http://cnode-dev:8500"
+      }
+    }
+  }
+}
