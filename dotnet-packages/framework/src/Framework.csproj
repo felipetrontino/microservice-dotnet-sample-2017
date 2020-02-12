@@ -2,12 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>HBSIS.Framework</RootNamespace>    
-    <PackageId>HBSIS.LiteFramework</PackageId>    
-    <Authors>HBSIS.LiteFramework</Authors>
-    <Company>HBSIS.LiteFramework</Company>
-    <Product>HBSIS.LiteFramework</Product>    
-    <IsPackable>true</IsPackable>
+    <RootNamespace>Framework</RootNamespace>    
+    <PackageId>Framework</PackageId>    
+    <Authors>Framework</Authors>
+    <Company>Framework</Company>
+    <Product>Framework</Product>    
+    <IsPackable>true</IsPackable>    
+    <Description>Framework is a common library for application development</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

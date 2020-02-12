@@ -1,6 +1,7 @@
 ﻿using Framework.Core.Entities;
 using Framework.Data.Common;
 using Framework.Test.Mock.Common;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Mongo2Go;
 using MongoDB.Driver;
@@ -25,7 +26,14 @@ namespace Framework.Test.Common
             where TDataContext : DbContext
         {
             var builder = new DbContextOptionsBuilder<TDataContext>();
-            builder.UseInMemoryDatabase(Guid.NewGuid().ToString());
+            //builder.UseInMemoryDatabase(Guid.NewGuid().ToString());
+
+            //var connection = new SqliteConnection("DataSource=:memory:");
+            //connection.Open();
+            //builder.UseSqlite(connection);
+
+            builder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=EFProviders.InMemory;Trusted_Connection=True;ConnectRetryCount=0");
+
             var options = builder.Options;
 
             var tenantAccessor = new TenantAccessorStub();

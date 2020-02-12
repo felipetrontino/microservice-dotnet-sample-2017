@@ -19,7 +19,10 @@ namespace Book.Data
 
         public DbBook(DbContextOptions options, ITenantAccessor tenantAccessor, IUserAccessor userAccessor)
           : base(options, tenantAccessor, userAccessor)
-        { }
+        {
+
+
+        }
 
         public DbSet<Entities.Book> Books { get; set; }
 

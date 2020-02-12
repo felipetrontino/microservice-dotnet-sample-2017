@@ -19,11 +19,6 @@ namespace Framework.Core.Bus.Consumer
 
         public string ExchangeName { get; }
 
-        public static object Create(object queueNamesLibrary)
-        {
-            throw new NotImplementedException();
-        }
-
         public IConsumerContainer Add<TConsumer, TMessage>(string contentName = null)
             where TConsumer : IConsumer<TMessage>
             where TMessage : IBusMessage
