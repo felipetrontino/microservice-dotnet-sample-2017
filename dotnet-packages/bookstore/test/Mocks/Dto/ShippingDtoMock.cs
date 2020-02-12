@@ -19,8 +19,10 @@ namespace Bookstore.Tests.Mocks.Dto
             Value.CreateDate = Fake.GetCreateDate(Key);
             Value.Customer = GetCustomerDetail();
 
-            Value.Items = new List<ShippingDto.OrderItemDetail>();
-            Value.Items.Add(GetOrderItemDetail());
+            Value.Items = new List<ShippingDto.OrderItemDetail>
+            {
+                GetOrderItemDetail()
+            };
 
             return this;
         }

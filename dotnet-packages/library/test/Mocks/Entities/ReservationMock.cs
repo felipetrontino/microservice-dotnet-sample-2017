@@ -25,8 +25,10 @@ namespace Library.Tests.Mocks.Entities
             Value.RequestDate = Fake.GetRequestDate(Key);
             Value.Member = MemberMock.Get(Key);
 
-            Value.Loans = new List<Loan>();
-            Value.Loans.Add(LoanMock.Get(Key));
+            Value.Loans = new List<Loan>
+            {
+                LoanMock.Get(Key)
+            };
 
             return this;
         }

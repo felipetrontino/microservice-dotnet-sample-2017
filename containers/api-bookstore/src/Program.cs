@@ -8,9 +8,10 @@ namespace Bookstore.Api
         protected Program()
         {
         }
+
         public static async Task<int> Main(string[] args)
         {
-            return await WebHostBootstrap.RunAsync<Startup>("http://*:9012");
+            return await WebHostBootstrap.RunAsync<Startup>();
         }
     }
 }

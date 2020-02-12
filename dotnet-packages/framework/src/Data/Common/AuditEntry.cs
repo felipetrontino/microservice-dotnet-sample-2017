@@ -30,16 +30,18 @@ namespace Framework.Data.Common
 
         public AuditLog ToAudit()
         {
-            var audit = new AuditLog();
-            audit.UserId = UserId;
-            audit.TableName = TableName;
-            audit.Schema = Schema;
-            audit.Tenant = Tenant;
-            audit.Date = DateTime.UtcNow;
-            audit.Action = GetState(State);
-            audit.PrimaryKey = JsonConvert.SerializeObject(KeyValues);
-            audit.OldValues = OldValues.Count == 0 ? null : JsonConvert.SerializeObject(OldValues);
-            audit.NewValues = NewValues.Count == 0 ? null : JsonConvert.SerializeObject(NewValues);
+            var audit = new AuditLog
+            {
+                UserId = UserId,
+                TableName = TableName,
+                Schema = Schema,
+                Tenant = Tenant,
+                Date = DateTime.UtcNow,
+                Action = GetState(State),
+                PrimaryKey = JsonConvert.SerializeObject(KeyValues),
+                OldValues = OldValues.Count == 0 ? null : JsonConvert.SerializeObject(OldValues),
+                NewValues = NewValues.Count == 0 ? null : JsonConvert.SerializeObject(NewValues)
+            };
 
             return audit;
         }

@@ -61,8 +61,6 @@ namespace Library.Tests.Services
             var dtoExpected = ReservationDtoMessageMock.Get(key);
             dtoExpected.ReservationId = entity.Id;
             dto.Should().BeEquivalentToMessage(dtoExpected);
-
-            //var profillingExpected = ProfilingEntityMock.Get("", "");
         }
 
         [Fact]

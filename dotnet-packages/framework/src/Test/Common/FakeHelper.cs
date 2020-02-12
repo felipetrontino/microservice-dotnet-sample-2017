@@ -35,9 +35,9 @@ namespace Framework.Test.Common
             return key;
         }
 
-        public static string GetLanguage(string key = null)
+        public static string GetCulture(string key = null)
         {
-            return key ?? "EN";
+            return key ?? "en-us";
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Book.Api
 
         public static async Task<int> Main(string[] args)
         {
-            return await WebHostBootstrap.RunAsync<Startup>("http://*:9009");
+            return await WebHostBootstrap.RunAsync<Startup>();
         }
     }
 }

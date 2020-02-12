@@ -17,15 +17,17 @@ namespace Framework.Core.Logging.Serilog
 
         public void Emit(LogEvent logEvent)
         {
-            var e = new RabbitMQ.LogEvent();
-            e.Audience = Configuration.Audience.Get();
-            e.Logger = Configuration.ProjectName.Get();
-            e.Stage = Configuration.Stage.Get().ToString();
-            e.Tenant = ServiceAccessor.Instance?.GetService<ITenantAccessor>()?.Tenant;
-            e.Timestamp = logEvent.Timestamp.DateTime;
-            e.Level = logEvent.Level.ToString().ToUpper();
-            e.Message = logEvent.RenderMessage();
-            e.Exception = logEvent.Exception?.ToString();
+            var e = new RabbitMQ.LogEvent
+            {
+                Audience = Configuration.Audience.Get(),
+                Logger = Configuration.ProjectName.Get(),
+                Stage = Configuration.Stage.Get().ToString(),
+                Tenant = ServiceAccessor.Instance?.GetService<ITenantAccessor>()?.Tenant,
+                Timestamp = logEvent.Timestamp.DateTime,
+                Level = logEvent.Level.ToString().ToUpper(),
+                Message = logEvent.RenderMessage(),
+                Exception = logEvent.Exception?.ToString()
+            };
 
             _client.Publish(e);
         }

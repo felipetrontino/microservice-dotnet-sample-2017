@@ -11,7 +11,7 @@ namespace Framework.Core.Bus.RabbitMQ
 {
     public class BusPublisher : BaseBus, IBusPublisher
     {
-        public BusPublisher(IConfiguration configuration, ITenantAccessor tenantAccessor, IUserAccessor userAccessor, ILanguageAccessor languageAccessor)
+        public BusPublisher(IConfiguration configuration, ITenantAccessor tenantAccessor, IUserAccessor userAccessor, ICultureAccessor languageAccessor)
            : base(configuration, tenantAccessor, userAccessor, languageAccessor)
         {
         }
@@ -25,11 +25,9 @@ namespace Framework.Core.Bus.RabbitMQ
             {
                 using (var channel = Connection.CreateModel())
                 {
-                    var type = message.GetType();
-                    message.UserName = UserAccessor.UserName;
-                    message.Tenant = TenantAccessor.Tenant;
-                    message.Language = LanguageAccessor.Language;
+                    message.Setup(UserAccessor.UserName, TenantAccessor.Tenant, LanguageAccessor.Culture);
 
+                    var type = message.GetType();
                     bool isSubscriber = typeof(IBusPublishMessage).IsAssignableFrom(type);
 
                     if (isSubscriber)

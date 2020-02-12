@@ -31,7 +31,7 @@ namespace Framework.Data.Extensions
                                                                     || p.State == EntityState.Modified);
 
             foreach (var ent in entries)
-            {                
+            {
                 SetAuditInfo(ent, date);
             }
         }
@@ -46,12 +46,14 @@ namespace Framework.Data.Extensions
 
             foreach (var ent in entries)
             {
-                var auditEntry = new AuditEntry(ent);
-                auditEntry.State = ent.State;
-                auditEntry.UserId = userAcessor.UserName;
-                auditEntry.Tenant = tenantAccessor.Tenant;
-                auditEntry.Schema = schema;
-                auditEntry.TableName = ent.Metadata.Relational().TableName;
+                var auditEntry = new AuditEntry(ent)
+                {
+                    State = ent.State,
+                    UserId = userAcessor.UserName,
+                    Tenant = tenantAccessor.Tenant,
+                    Schema = schema,
+                    TableName = ent.Metadata.Relational().TableName
+                };
 
                 foreach (var property in ent.Properties)
                 {

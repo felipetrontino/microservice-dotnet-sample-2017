@@ -31,20 +31,22 @@ namespace Library.Services
                                        .Include(x => x.Member)
                                        .FirstOrDefaultAsync(x => x.Id == message.ReservationId);
 
-            var dto = new ReservationDto();
-            dto.Id = reservation.Id;
-            dto.Number = reservation.Number;
-            dto.RequestDate = reservation.RequestDate;
-            dto.Status = reservation.Status;
-
-            dto.Member = new ReservationDto.MemberDetail()
+            var dto = new ReservationDto
             {
-                Id = reservation.Member.Id,
-                DocumentId = reservation.Member.DocumentId,
-                Name = reservation.Member.Name
-            };
+                Id = reservation.Id,
+                Number = reservation.Number,
+                RequestDate = reservation.RequestDate,
+                Status = reservation.Status,
 
-            dto.Loans = new List<ReservationDto.LoanDetail>();
+                Member = new ReservationDto.MemberDetail()
+                {
+                    Id = reservation.Member.Id,
+                    DocumentId = reservation.Member.DocumentId,
+                    Name = reservation.Member.Name
+                },
+
+                Loans = new List<ReservationDto.LoanDetail>()
+            };
 
             foreach (var item in reservation.Loans)
             {

@@ -10,9 +10,9 @@ namespace Framework.Web.Handlers
     {
         private readonly ITenantAccessor _tenantAccessor;
         private readonly IUserAccessor _userAccessor;
-        private readonly ILanguageAccessor _languageAccessor;
+        private readonly ICultureAccessor _languageAccessor;
 
-        public HeaderHandler(ITenantAccessor tenantAccessor, IUserAccessor userAccessor, ILanguageAccessor languageAccessor)
+        public HeaderHandler(ITenantAccessor tenantAccessor, IUserAccessor userAccessor, ICultureAccessor languageAccessor)
         {
             _tenantAccessor = tenantAccessor;
             _userAccessor = userAccessor;
@@ -27,8 +27,8 @@ namespace Framework.Web.Handlers
             if (!request.Headers.Contains(HttpHeaderNames.UserName))
                 request.Headers.Add(HttpHeaderNames.UserName, _userAccessor.UserName);
 
-            if (!request.Headers.Contains(HttpHeaderNames.Language))
-                request.Headers.Add(HttpHeaderNames.Language, _languageAccessor.Language);
+            if (!request.Headers.Contains(HttpHeaderNames.Culture))
+                request.Headers.Add(HttpHeaderNames.Culture, _languageAccessor.Culture);
 
             var response = await base.SendAsync(request, cancellationToken);
 

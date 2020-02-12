@@ -110,7 +110,7 @@ namespace Framework.Test.Mock.Bus
 
             public void Enqueue(string contextName, IBusMessage message)
             {
-                message.Tenant = FakeHelper.GetTenant();
+                message.Setup(tenant: FakeHelper.GetTenant());
 
                 var queue = GetQueue(contextName);
                 queue.Enqueue(message);

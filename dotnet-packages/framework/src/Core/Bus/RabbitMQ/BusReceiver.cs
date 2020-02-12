@@ -12,7 +12,7 @@ namespace Framework.Core.Bus.RabbitMQ
 {
     public class BusReceiver : BaseBus, IBusReceiver
     {
-        public BusReceiver(IConfiguration configuration, ITenantAccessor tenantAccessor, IUserAccessor userAccessor, ILanguageAccessor languageAccessor)
+        public BusReceiver(IConfiguration configuration, ITenantAccessor tenantAccessor, IUserAccessor userAccessor, ICultureAccessor languageAccessor)
             : base(configuration, tenantAccessor, userAccessor, languageAccessor)
         {
         }
@@ -41,11 +41,13 @@ namespace Framework.Core.Bus.RabbitMQ
                 consumer.Received += async (model, ea) =>
                 {
                     var body = ea.Body;
-                    var messageInfo = new MessageInfo();
-                    messageInfo.ContentName = ea.BasicProperties.ContentType;
-                    messageInfo.MessageId = ea.BasicProperties.MessageId;
-                    messageInfo.RequestId = ea.BasicProperties.CorrelationId;
-                    messageInfo.Body = Encoding.UTF8.GetString(body);
+                    var messageInfo = new MessageInfo
+                    {
+                        ContentName = ea.BasicProperties.ContentType,
+                        MessageId = ea.BasicProperties.MessageId,
+                        RequestId = ea.BasicProperties.CorrelationId,
+                        Body = Encoding.UTF8.GetString(body)
+                    };
 
                     try
                     {

@@ -18,8 +18,10 @@ namespace Bookstore.Tests.Mocks.Message
             Value.CustomerName = Fake.GetCustomerName(Key);
             Value.CustomerId = FakeHelper.GetId(Key).ToString();
             Value.Date = Fake.GetOrderDate(Key);
-            Value.Items = new List<PurchaseMessage.Item>();
-            Value.Items.Add(GetItem(Key));
+            Value.Items = new List<PurchaseMessage.Item>
+            {
+                GetItem(Key)
+            };
 
             return this;
         }

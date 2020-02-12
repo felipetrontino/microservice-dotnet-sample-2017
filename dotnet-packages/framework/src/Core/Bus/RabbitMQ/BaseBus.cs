@@ -19,7 +19,7 @@ namespace Framework.Core.Bus.RabbitMQ
         protected const string UserIdKey = "UserId";
         protected const string TenantKey = "Tenant";
 
-        public BaseBus(IConfiguration configuration, ITenantAccessor tenantAccessor, IUserAccessor userAccessor, ILanguageAccessor languageAccessor)
+        public BaseBus(IConfiguration configuration, ITenantAccessor tenantAccessor, IUserAccessor userAccessor, ICultureAccessor languageAccessor)
         {
             TenantAccessor = tenantAccessor;
             UserAccessor = userAccessor;
@@ -32,7 +32,7 @@ namespace Framework.Core.Bus.RabbitMQ
         protected IConnection Connection { get; private set; }
         protected ITenantAccessor TenantAccessor { get; private set; }
         protected IUserAccessor UserAccessor { get; private set; }
-        protected ILanguageAccessor LanguageAccessor { get; private set; }
+        protected ICultureAccessor LanguageAccessor { get; private set; }
 
         protected string Connect(Action<IBusOptions> setOptions = null)
         {
@@ -89,11 +89,13 @@ namespace Framework.Core.Bus.RabbitMQ
 
         protected IConnectionFactory GetConnectionFactory(RabbitConfig config)
         {
-            var ret = new ConnectionFactory();
-            ret.HostName = config.Host;
-            ret.Port = config.Port.ToNInt() ?? AmqpTcpEndpoint.UseDefaultPort;
-            ret.UserName = config.UserName;
-            ret.Password = config.Password;
+            var ret = new ConnectionFactory
+            {
+                HostName = config.Host,
+                Port = config.Port.ToNInt() ?? AmqpTcpEndpoint.UseDefaultPort,
+                UserName = config.UserName,
+                Password = config.Password
+            };
 
             if (config.VHost != null)
                 ret.VirtualHost = config.VHost;

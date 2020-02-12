@@ -1,9 +1,8 @@
-﻿using Framework.Core.Common;
-using System;
+﻿using System;
 
 namespace Framework.Core.Bus
 {
-    public abstract class BaseMessage : IBusMessage, IUserAccessor, ITenantAccessor, ILanguageAccessor
+    public abstract class BaseMessage : IBusMessage
     {
         protected BaseMessage()
         {
@@ -16,6 +15,13 @@ namespace Framework.Core.Bus
         public string RequestId { get; set; }
         public string UserName { get; set; }
         public string Tenant { get; set; }
-        public string Language { get; set; }
+        public string Culture { get; set; }
+
+        public void Setup(string userName = null, string tenant = null, string culture = null)
+        {
+            UserName = userName ?? UserName;
+            Tenant = tenant ?? Tenant;
+            Culture = culture ?? Culture;
+        }
     }
 }

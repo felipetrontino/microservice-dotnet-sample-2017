@@ -12,14 +12,11 @@ namespace Framework.Web.Common
 {
     public static class WebHostBootstrap
     {
-        public static async Task<int> RunAsync<T>(params string[] urls)
+        public static async Task<int> RunAsync<T>()
             where T : class
         {
             var config = Configuration.GetConfiguration();
             LogHelper.Logger = new SerilogLogger(config);
-
-            if (urls == null)
-                urls = new string[] { $"http://*:{RouteNames.DefaultPort}" };
 
             try
             {
@@ -35,7 +32,6 @@ namespace Framework.Web.Common
 
                         configurationBuilder.AddConfiguration(config);
                     })
-                    .UseUrls(urls ?? new string[] { })
                     .UseStartup<T>()
                     .Build();
 

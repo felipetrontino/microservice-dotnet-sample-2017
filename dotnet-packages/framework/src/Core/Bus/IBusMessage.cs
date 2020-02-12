@@ -1,9 +1,9 @@
-﻿namespace Framework.Core.Bus
+﻿using Framework.Core.Common;
+
+namespace Framework.Core.Bus
 {
-    public interface IBusMessage : IBusInfo
+    public interface IBusMessage : IBusInfo, IUserAccessor, ITenantAccessor, ICultureAccessor
     {
-        string UserName { get; set; }
-        string Tenant { get; set; }
-        string Language { get; set; }
+        void Setup(string userName = null, string tenant = null, string culture = null);
     }
 }

@@ -18,8 +18,10 @@ namespace Library.Tests.Mocks.Dto
             Value.Status = Fake.GetStatusReservation(Key);
             Value.RequestDate = Fake.GetRequestDate(Key);
             Value.Member = GetMemberDetail(Key);
-            Value.Loans = new List<ReservationDto.LoanDetail>();
-            Value.Loans.Add(GetLoanDetail(Key));
+            Value.Loans = new List<ReservationDto.LoanDetail>
+            {
+                GetLoanDetail(Key)
+            };
 
             return this;
         }

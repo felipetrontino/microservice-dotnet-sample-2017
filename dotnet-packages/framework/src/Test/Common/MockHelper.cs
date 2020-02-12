@@ -1,7 +1,6 @@
 ﻿using Framework.Core.Entities;
 using Framework.Data.Common;
 using Framework.Test.Mock.Common;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Mongo2Go;
 using MongoDB.Driver;
@@ -26,13 +25,7 @@ namespace Framework.Test.Common
             where TDataContext : DbContext
         {
             var builder = new DbContextOptionsBuilder<TDataContext>();
-            //builder.UseInMemoryDatabase(Guid.NewGuid().ToString());
-
-            //var connection = new SqliteConnection("DataSource=:memory:");
-            //connection.Open();
-            //builder.UseSqlite(connection);
-
-            builder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=EFProviders.InMemory;Trusted_Connection=True;ConnectRetryCount=0");
+            builder.UseInMemoryDatabase(Guid.NewGuid().ToString());
 
             var options = builder.Options;
 
@@ -56,8 +49,10 @@ namespace Framework.Test.Common
             else
                 _runner = MongoDbRunner.Start(MongoTestPath);
 
-            var mongoUrlBuilder = new MongoUrlBuilder(_runner.ConnectionString);
-            mongoUrlBuilder.DatabaseName = Guid.NewGuid().ToString();
+            var mongoUrlBuilder = new MongoUrlBuilder(_runner.ConnectionString)
+            {
+                DatabaseName = Guid.NewGuid().ToString()
+            };
 
             var client = new MongoClient(mongoUrlBuilder.ToMongoUrl());
             var database = client.GetDatabase(mongoUrlBuilder.DatabaseName);

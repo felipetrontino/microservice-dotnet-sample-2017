@@ -25,8 +25,10 @@ namespace Bookstore.Tests.Mocks.Entities
             Value.CreateDate = Fake.GetCreateDate(Key);
             Value.Customer = CustomerMock.Get(Key);
 
-            Value.Items = new List<OrderItem>();
-            Value.Items.Add(OrderItemMock.Get(Key));
+            Value.Items = new List<OrderItem>
+            {
+                OrderItemMock.Get(Key)
+            };
 
             return this;
         }

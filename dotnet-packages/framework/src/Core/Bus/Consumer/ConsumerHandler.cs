@@ -50,7 +50,7 @@ namespace Framework.Core.Bus.Consumer
             var services = new ServiceCollection();
             services.AddScoped(x => message as IUserAccessor);
             services.AddScoped(x => message as ITenantAccessor);
-            services.AddScoped(x => message as ILanguageAccessor);
+            services.AddScoped(x => message as ICultureAccessor);
 
             configure?.Invoke(message, config, services);
 

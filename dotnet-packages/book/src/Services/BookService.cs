@@ -54,8 +54,10 @@ namespace Book.Services
 
                 if (category == null)
                 {
-                    category = new Entities.BookCategory();
-                    category.Name = model.Category;
+                    category = new Entities.BookCategory
+                    {
+                        Name = model.Category
+                    };
                 }
 
                 if (!book.Categories.Any(x => x.Category.Name == category.Name))
@@ -72,8 +74,10 @@ namespace Book.Services
 
                 if (book.Author == null)
                 {
-                    book.Author = new Entities.BookAuthor();
-                    book.Author.Name = authorName;
+                    book.Author = new Entities.BookAuthor
+                    {
+                        Name = authorName
+                    };
                 }
             }
             else
@@ -141,10 +145,12 @@ namespace Book.Services
 
         private BookProxy MapEntityToProxy(Entities.Book e)
         {
-            var ret = new BookProxy();
-            ret.Id = e.Id;
-            ret.Title = e.Title;
-            ret.Author = e.AuthorName;
+            var ret = new BookProxy
+            {
+                Id = e.Id,
+                Title = e.Title,
+                Author = e.AuthorName
+            };
 
             if (FeatureAddTableAtuthor.Get())
                 ret.Author = e.Author?.Name;

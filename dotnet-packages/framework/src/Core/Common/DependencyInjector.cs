@@ -25,7 +25,7 @@ namespace Framework.Core.Common
         {
             Register(services, config);
 
-            services.AddScoped<ILanguageAccessor, LanguageAccessor>();
+            services.AddScoped<ICultureAccessor, CultureAccessor>();
             ServiceAccessor.Instance = services.BuildServiceProvider();
         }
 
@@ -37,7 +37,7 @@ namespace Framework.Core.Common
             services.AddScoped<IUserAccessor, HttpContextInfoAccessor>();
             services.AddScoped<ITenantAccessor, HttpContextInfoAccessor>();
             services.AddScoped<IRequestIdAccessor, HttpContextInfoAccessor>();
-            services.AddScoped<ILanguageAccessor, HttpContextInfoAccessor>();
+            services.AddScoped<ICultureAccessor, HttpContextInfoAccessor>();
             services.AddScoped<IJwtAccessor, HttpContextInfoAccessor>();
 
             ServiceAccessor.Instance = services.BuildServiceProvider();

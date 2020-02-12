@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Framework.Web.Common
 {
-    public class HttpContextInfoAccessor : IJwtAccessor, ITenantAccessor, IUserAccessor, IRequestIdAccessor, ILanguageAccessor
+    public class HttpContextInfoAccessor : IJwtAccessor, ITenantAccessor, IUserAccessor, IRequestIdAccessor, ICultureAccessor
     {
         private readonly IHttpContextAccessor _accessor;
 
@@ -73,14 +73,14 @@ namespace Framework.Web.Common
             }
         }
 
-        public string Language
+        public string Culture
         {
             get
             {
                 if (_accessor.HttpContext != null)
                 {
-                    return _accessor.HttpContext.Request.Headers.ContainsKey(HttpHeaderNames.Language)
-                        ? _accessor.HttpContext.Request.Headers[HttpHeaderNames.Language].ToString()
+                    return _accessor.HttpContext.Request.Headers.ContainsKey(HttpHeaderNames.Culture)
+                        ? _accessor.HttpContext.Request.Headers[HttpHeaderNames.Culture].ToString()
                         : null;
                 }
 

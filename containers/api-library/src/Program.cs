@@ -8,9 +8,10 @@ namespace Library.Api
         protected Program()
         {
         }
+
         public static async Task<int> Main(string[] args)
         {
-            return await WebHostBootstrap.RunAsync<Startup>("http://*:9018");
+            return await WebHostBootstrap.RunAsync<Startup>();
         }
     }
 }

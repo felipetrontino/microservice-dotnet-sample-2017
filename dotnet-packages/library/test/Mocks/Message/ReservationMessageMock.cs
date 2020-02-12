@@ -18,8 +18,10 @@ namespace Library.Tests.Mocks.Message
             Value.MemberId = FakeHelper.GetId(Key).ToString();
             Value.MemberName = Fake.GetMemberName(Key);
 
-            Value.Items = new List<ReservationMessage.Item>();
-            Value.Items.Add(GetItem(Key));
+            Value.Items = new List<ReservationMessage.Item>
+            {
+                GetItem(Key)
+            };
 
             return this;
         }
