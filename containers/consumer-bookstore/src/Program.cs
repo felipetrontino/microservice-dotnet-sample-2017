@@ -23,7 +23,7 @@ namespace Bookstore.Consumer
         {
             var handler = ConsumerContainer.Create(QueueNames.Bookstore)
                                             .Add<PurchaseConsumer, PurchaseMessage>()
-                                            .Add<ShippingDtoConsumer, ShippingDtoMessage>()
+                                            .Add<ShippingEventConsumer, ShippingEventMessage>()
                                             .Build(config);
 
             return handler.RunAsync();

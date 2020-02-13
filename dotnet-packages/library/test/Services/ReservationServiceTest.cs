@@ -1,20 +1,14 @@
 ﻿using FluentAssertions;
-using Framework.Core.Pagination;
 using Framework.Test.Common;
 using Framework.Test.Data;
 using Framework.Test.Mock.Bus;
-using Framework.Test.Mock.Pagination;
 using Library.Core.Common;
 using Library.Core.Enums;
 using Library.Data;
 using Library.Models.Message;
-using Library.Models.Payload;
-using Library.Models.Proxy;
 using Library.Services;
 using Library.Tests.Mocks.Entities;
-using Library.Tests.Mocks.Message;
-using Library.Tests.Mocks.Payload;
-using Library.Tests.Mocks.Proxy;
+using Library.Tests.Mocks.Models.Message;
 using Library.Tests.Utils;
 using System;
 using System.Linq;
@@ -58,7 +52,7 @@ namespace Library.Tests.Services
             expected.Loans[0].Id = entity.Loans[0].Id;
             entity.Should().BeEquivalentToEntity(expected);
 
-            var dtoExpected = ReservationDtoMessageMock.Get(key);
+            var dtoExpected = ReservationEventMessageMock.Get(key);
             dtoExpected.ReservationId = entity.Id;
             dto.Should().BeEquivalentToMessage(dtoExpected);
         }
@@ -83,7 +77,7 @@ namespace Library.Tests.Services
             expected.Loans[0].Copy = null;
             entity.Should().BeEquivalentToEntity(expected);
 
-            var dtoExpected = ReservationDtoMessageMock.Get(key);
+            var dtoExpected = ReservationEventMessageMock.Get(key);
             dtoExpected.ReservationId = entity.Id;
             dto.Should().BeEquivalentToMessage(dtoExpected);
         }
@@ -110,7 +104,7 @@ namespace Library.Tests.Services
             expected.Loans[0].Copy = null;
             entity.Should().BeEquivalentToEntity(expected);
 
-            var dtoExpected = ReservationDtoMessageMock.Get(key);
+            var dtoExpected = ReservationEventMessageMock.Get(key);
             dtoExpected.ReservationId = entity.Id;
             dto.Should().BeEquivalentToMessage(dtoExpected);
         }
@@ -140,7 +134,7 @@ namespace Library.Tests.Services
             expected.Loans[0].Copy = null;
             entity.Should().BeEquivalentToEntity(expected);
 
-            var dtoExpected = ReservationDtoMessageMock.Get(key);
+            var dtoExpected = ReservationEventMessageMock.Get(key);
             dtoExpected.ReservationId = entity.Id;
             dto.Should().BeEquivalentToMessage(dtoExpected);
         }
@@ -166,7 +160,7 @@ namespace Library.Tests.Services
             expected.Loans[0].Id = entity.Loans[0].Id;
             entity.Should().BeEquivalentToEntity(expected);
 
-            var dtoExpected = ReservationDtoMessageMock.Get(key);
+            var dtoExpected = ReservationEventMessageMock.Get(key);
             dto.Should().BeEquivalentToMessage(dtoExpected);
         }
 
@@ -194,7 +188,7 @@ namespace Library.Tests.Services
 
             entity.Should().BeEquivalentToEntity(expected);
 
-            var dtoExpected = ReservationDtoMessageMock.Get(key);
+            var dtoExpected = ReservationEventMessageMock.Get(key);
             dto.Should().BeEquivalentToMessage(dtoExpected);
         }
 
@@ -446,72 +440,16 @@ namespace Library.Tests.Services
 
         #endregion ExpireAsync
 
-        #region GetByFilter
-
-        [Fact]
-        public void GetByFilterAsync_Reservation_Filter_Null()
-        {
-            var keys = new string[]
-            {
-                FakeHelper.Key,
-                FakeHelper.Key
-            };
-
-            MockRepository.Add(ReservationMock.Get(keys[0]));
-            MockRepository.Add(ReservationMock.Get(keys[1]));
-
-            var pagination = PagedRequestMock.Create<ReservationFilterPayload>(null);
-
-            var proxy = GetByFilterAsync(pagination);
-            proxy.Should().NotBeNull();
-
-            var proxy1 = ReservationProxyMock.Get(keys[0]);
-            proxy1.MemberId = MemberMock.Get(keys[0]).UserId;
-
-            var proxy2 = ReservationProxyMock.Get(keys[1]);
-            proxy2.MemberId = MemberMock.Get(keys[1]).UserId;
-
-            var pagedProxyExpected = PagedResponseMock.Create(proxy1, proxy2);
-            proxy.Should().BeEquivalentToModel(pagedProxyExpected);
-        }
-
-        [Fact]
-        public void GetByFilterAsync_Reservation_Filter_Number()
-        {
-            var keys = new string[]
-            {
-                FakeHelper.Key,
-                FakeHelper.Key
-            };
-
-            MockRepository.Add(ReservationMock.Get(keys[0]));
-            MockRepository.Add(ReservationMock.Get(keys[1]));
-
-            var pagination = PagedRequestMock.Create(ReservationFilterPayloadMock.Get(keys[0]));
-            pagination.Filter.Number = Fake.GetReservationNumber(keys[0]);
-
-            var proxy = GetByFilterAsync(pagination);
-            proxy.Should().NotBeNull();
-
-            var proxy1 = ReservationProxyMock.Get(keys[0]);
-            proxy1.MemberId = MemberMock.Get(keys[0]).UserId;
-
-            var pagedProxyExpected = PagedResponseMock.Create(proxy1);
-            proxy.Should().BeEquivalentToModel(pagedProxyExpected);
-        }
-
-        #endregion GetByFilter
-
         #region Utils
 
-        private ReservationDtoMessage RequestAsync(ReservationMessage message)
+        private ReservationEventMessage RequestAsync(ReservationMessage message)
         {
             var bus = BusPublisherStub.Create();
 
             var service = new ReservationService(Db, bus);
             service.RequestAsync(message).Wait();
 
-            return bus.Dequeue<ReservationDtoMessage>(QueueNames.Library);
+            return bus.Dequeue<ReservationEventMessage>(QueueNames.Library);
         }
 
         private void ReturnAsync(ReservationReturnMessage message)
@@ -536,12 +474,6 @@ namespace Library.Tests.Services
 
             var service = new ReservationService(Db, bus);
             service.ExpireAsync(message).Wait();
-        }
-
-        private PagedResponse<ReservationProxy> GetByFilterAsync(PagedRequest<ReservationFilterPayload> pagination)
-        {
-            var service = new ReservationService(Db, BusPublisherStub.Create());
-            return service.GetByFilterAsync(pagination).GetAwaiter().GetResult();
         }
 
         #endregion Utils

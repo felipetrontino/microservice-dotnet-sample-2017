@@ -10,9 +10,9 @@ namespace Framework.Core.Logging.Serilog
     {
         private readonly RabbitMQ.RabbitClient _client;
 
-        public RabbitSink(RabbitConfig config)
+        public RabbitSink(string connectionString)
         {
-            _client = new RabbitMQ.RabbitClient(config);
+            _client = new RabbitMQ.RabbitClient(connectionString);
         }
 
         public void Emit(LogEvent logEvent)

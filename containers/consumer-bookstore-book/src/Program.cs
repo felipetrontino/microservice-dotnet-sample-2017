@@ -22,7 +22,7 @@ namespace Bookstore.Consumer.Book
         private static Task RunAsync(IConfiguration config)
         {
             var handler = ConsumerContainer.Create(QueueNames.Book_Bookstore, ExchangeNames.Book)
-                                                .Add<UpdateBookConsumer, BookMessage>("BookUpdateMessage")
+                                                .Add<UpdateBookConsumer, BookMessage>("UpdateBookEvent")
                                                 .Build(config);
 
             return handler.RunAsync();

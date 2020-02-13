@@ -1,6 +1,5 @@
 ﻿using Framework.Core.Common;
 using Framework.Core.Config;
-using Framework.Core.Exceptions;
 using Framework.Core.Extensions;
 using Framework.Core.Logging;
 using Framework.Core.Utils;
@@ -36,28 +35,25 @@ namespace Framework.Core.Bus.RabbitMQ
 
         protected string Connect(Action<IBusOptions> setOptions = null)
         {
-            IBusOptions options = new BusOptions(ConnectionStringNames.Rabbit);
+            var connectionString = Settings.GetInstance(Configuration, TenantAccessor.Tenant).ConnectionStrings.GetOrDefault(ConnectionStringNames.Rabbit);
+
+            IBusOptions options = new BusOptions(connectionString);
             setOptions?.Invoke(options);
 
             if (!Connections.ContainsKey(options.Key))
             {
-                var config = RabbitConfig.Get(Configuration, options.ConnectionStringName, TenantAccessor.Tenant);
-
-                if (config == null)
-                    throw new HBBusException("BusConfig not exists.");
-
                 var connectionCompletionSource = new TaskCompletionSource<bool>();
                 var connectionTask = connectionCompletionSource.Task;
 
                 Connections.Add(options.Key, connectionTask);
 
-                Connect(config, connectionCompletionSource);
+                Connect(connectionString, connectionCompletionSource);
             }
 
             return options.Key;
         }
 
-        private void Connect(RabbitConfig config, TaskCompletionSource<bool> taskCompletion)
+        private void Connect(string connectionString, TaskCompletionSource<bool> taskCompletion)
         {
             Task.Run(() =>
             {
@@ -69,12 +65,12 @@ namespace Framework.Core.Bus.RabbitMQ
                         Delay = 5000,
                         Task = () =>
                         {
-                            var factory = GetConnectionFactory(config);
+                            var factory = GetConnectionFactory(connectionString);
                             return factory.CreateConnection();
                         },
                         OnAttemptError = e =>
                         {
-                            LogHelper.Debug($"Unable to connect to RabbitMQ (Host: {config.Host}. Message: {e.Message}). Retrying...");
+                            LogHelper.Debug($"Unable to connect to RabbitMQ ({connectionString}). Message: {e.Message}. Retrying...");
                         }
                     }.Run();
 
@@ -87,18 +83,12 @@ namespace Framework.Core.Bus.RabbitMQ
             });
         }
 
-        protected IConnectionFactory GetConnectionFactory(RabbitConfig config)
+        protected IConnectionFactory GetConnectionFactory(string configconnectionString)
         {
             var ret = new ConnectionFactory
             {
-                HostName = config.Host,
-                Port = config.Port.ToNInt() ?? AmqpTcpEndpoint.UseDefaultPort,
-                UserName = config.UserName,
-                Password = config.Password
+                Uri = new Uri(configconnectionString)
             };
-
-            if (config.VHost != null)
-                ret.VirtualHost = config.VHost;
 
             return ret;
         }

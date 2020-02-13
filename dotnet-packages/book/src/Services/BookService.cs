@@ -92,9 +92,8 @@ namespace Book.Services
 
             await _db.SaveChangesAsync();
 
-            var message = new BookUpdateMessage
+            var message = new UpdateBookEvent
             {
-                Id = book.Id,
                 Title = book.Title,
                 Author = authorName,
                 Language = book.Language
@@ -112,21 +111,16 @@ namespace Book.Services
                  .FirstOrDefaultAsync();
         }
 
-        public async Task<PagedResponse<BookProxy>> GetAllAsync(PagedRequest pagination)
-        {
-            var query = _db.Books
-                        .Include(x => x.Author)
-                        .AsQueryable();
-
-            return await PagedHelper.CreateAsync(query, pagination, MapEntityToProxy);
-        }
-
-        public async Task<PagedResponse<BookProxy>> GetByFilterAsync(PagedRequest<BookFilterPayload> pagination)
+        public async Task<PagedResponse<BookProxy>> GetAllAsync(BookFilterPayload pagination)
         {
             var query = _db.Books.AsQueryable();
-            query = FilterQuery(query, pagination.Filter);
 
-            return await PagedHelper.CreateAsync(query, pagination, MapEntityToProxy);
+            if (FeatureAddTableAtuthor.Get())
+                query.Include(x => x.Author);
+
+            query = FilterQuery(query, pagination);
+
+            return await query.ToPagedResponseAsync(pagination, MapEntityToProxy);
         }
 
         private static IQueryable<Entities.Book> FilterQuery(IQueryable<Entities.Book> query, BookFilterPayload filter)

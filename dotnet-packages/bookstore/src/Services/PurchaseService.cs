@@ -5,9 +5,9 @@ using Bookstore.Data;
 using Bookstore.Entities;
 using Bookstore.Models.Message;
 using Framework.Core.Bus;
-using Framework.Core.Extensions;
 using Framework.Core.Common;
 using Framework.Core.Config;
+using Framework.Core.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -97,7 +97,7 @@ namespace Bookstore.Services
             if (IntegrationWithLibrary.Get())
                 await _bus.PublishAllAsync(QueueNames.Library, numbersDropped);
 
-            var dto = new ShippingDtoMessage
+            var dto = new ShippingEventMessage
             {
                 OrderId = order.Id
             };

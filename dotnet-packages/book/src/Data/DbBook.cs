@@ -13,15 +13,13 @@ namespace Book.Data
     {
         [ExcludeFromCodeCoverage]
         public DbBook(IConfiguration config, ITenantAccessor tenantAccessor, IUserAccessor userAccessor)
-            : base(ConnectionStringNames.Sql, DatabaseProvider.Postgres, config, tenantAccessor, userAccessor)
+            : base(ConnectionStringNames.Sql, DatabaseProvider.InMemory, config, tenantAccessor, userAccessor)
         {
         }
 
         public DbBook(DbContextOptions options, ITenantAccessor tenantAccessor, IUserAccessor userAccessor)
           : base(options, tenantAccessor, userAccessor)
         {
-
-
         }
 
         public DbSet<Entities.Book> Books { get; set; }

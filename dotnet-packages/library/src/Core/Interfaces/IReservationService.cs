@@ -1,8 +1,5 @@
 ﻿using Library.Models.Message;
 using System.Threading.Tasks;
-using Framework.Core.Pagination;
-using Library.Models.Payload;
-using Library.Models.Proxy;
 
 namespace Library.Core.Interfaces
 {
@@ -15,6 +12,5 @@ namespace Library.Core.Interfaces
         Task CheckDueAsync();
 
         Task ExpireAsync(ReservationExpiredMessage message);
-        Task<PagedResponse<ReservationProxy>> GetByFilterAsync(PagedRequest<ReservationFilterPayload> pagination);
     }
 }

@@ -31,7 +31,7 @@ namespace Library.Tools.Tasks
 
             foreach (var order in orders)
             {
-                var message = new ReservationDtoMessage()
+                var message = new ReservationEventMessage()
                 {
                     ReservationId = order.Id
                 };

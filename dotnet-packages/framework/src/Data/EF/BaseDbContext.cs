@@ -50,8 +50,6 @@ namespace Framework.Data.EF
         public string Tenant { get; set; }
         public string Schema { get; set; }
 
-        public bool IsConfigureConnection { get { return ConnectionString != null; } }
-
         public DatabaseProvider Provider { get; private set; }
 
         public string ConnectionString { get; private set; }
@@ -65,7 +63,7 @@ namespace Framework.Data.EF
 
         public virtual void EnsureSeedData()
         {
-        }        
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -79,8 +77,7 @@ namespace Framework.Data.EF
         {
             base.OnConfiguring(optionsBuilder);
 
-            if (IsConfigureConnection)
-                ConfigureConnection(optionsBuilder, Provider, ConnectionString);
+            ConfigureConnection(optionsBuilder, Provider, ConnectionString);
         }
 
         private void ConfigureConnection(DbContextOptionsBuilder builder, DatabaseProvider provider, string connectionString)
@@ -99,12 +96,15 @@ namespace Framework.Data.EF
                     builder.UseNpgsql(connection);
                     break;
 
-                default:
+                case DatabaseProvider.SqlServer:
                     connection = new SqlConnection(connectionString);
                     builder.UseSqlServer(connection);
                     break;
+
+                default:
+                    builder.UseInMemoryDatabase($"InMemory_{connectionString}");
+                    break;
             }
         }
-        
     }
 }

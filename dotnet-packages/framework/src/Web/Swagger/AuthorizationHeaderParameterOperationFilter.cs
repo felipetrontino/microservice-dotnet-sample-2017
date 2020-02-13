@@ -23,7 +23,7 @@ namespace Framework.Web.Swagger
             {
                 Name = "Tenant",
                 In = "header",
-                Description = "tenant",
+                Description = "Tenant",
                 Required = true,
                 Type = "string"
             });
@@ -32,7 +32,7 @@ namespace Framework.Web.Swagger
             {
                 Name = "UserName",
                 In = "header",
-                Description = "username",
+                Description = "Username",
                 Required = false,
                 Type = "string"
             });
@@ -41,16 +41,16 @@ namespace Framework.Web.Swagger
             {
                 Name = "RequestId",
                 In = "header",
-                Description = "requestId",
+                Description = "Request Id",
                 Required = false,
                 Type = "string"
             });
 
             operation.Parameters.Add(new NonBodyParameter
             {
-                Name = "Language",
+                Name = "Culture",
                 In = "header",
-                Description = "language. ex.: PT, EN, ES",
+                Description = "Culture. pt-br, en-us, etc.",
                 Required = false,
                 Type = "string"
             });
@@ -62,7 +62,7 @@ namespace Framework.Web.Swagger
                     Name = "Authorization",
                     Default = "Bearer ",
                     In = "header",
-                    Description = "access token",
+                    Description = "Access Token",
                     Required = true,
                     Type = "string"
                 });

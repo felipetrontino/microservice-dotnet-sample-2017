@@ -176,7 +176,7 @@ namespace Bookstore.Tests.Services
 
         #region Utils
 
-        private (ShippingDtoMessage Dto, DropCopyNumberMessage Proxy) CreateAsync(PurchaseMessage message, Settings settings = null)
+        private (ShippingEventMessage Dto, DropCopyNumberMessage Proxy) CreateAsync(PurchaseMessage message, Settings settings = null)
         {
             settings = settings ?? Settings.Empty;
 
@@ -191,7 +191,7 @@ namespace Bookstore.Tests.Services
             service.CreateAsync(message).Wait();
 
             var drop = bus.Dequeue<DropCopyNumberMessage>(QueueNames.Library);
-            var payload = bus.Dequeue<ShippingDtoMessage>(QueueNames.Bookstore);
+            var payload = bus.Dequeue<ShippingEventMessage>(QueueNames.Bookstore);
 
             return (payload, drop);
         }

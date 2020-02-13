@@ -1,43 +1,31 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Framework.Core.Pagination
 {
-    public class PagedResponse<T>
+    public class PagedResponse<T> : List<T>, IPagedRequest
     {
         public static PagedResponse<T> Empty => new PagedResponse<T>();
 
-        public PagedResponse()
-            : this(null, null)
+        protected PagedResponse()
         {
         }
 
-        public PagedResponse(IEnumerable<T> data, int? recordCount = null)
+        public PagedResponse(IEnumerable<T> rows, int page, int pageSize, int count)
         {
-            Data = data;
-            CurrentPage = PageValues.PageStartIndex;
-            PageSize = PageValues.PageSize;
+            Page = page;
+            PageSize = pageSize;
+            TotalCount = count;
+            TotalPages = (int)Math.Ceiling(TotalCount / (double)PageSize);
 
-            if (data != null)
-                RecordCount = recordCount ?? data.Count();
+            AddRange(rows);
         }
 
-        public PagedResponse(IPagedRequest pagination, IEnumerable<T> data, int? recordCount = null)
-        {
-            Data = data;
-            CurrentPage = pagination.Page;
-            PageSize = pagination.PageSize;
-
-            if (data != null)
-                RecordCount = recordCount ?? data.Count();
-        }
-
-        public int CurrentPage { get; set; }
-
+        public int Page { get; set; }
         public int PageSize { get; set; }
-
-        public int RecordCount { get; set; }
-
-        public IEnumerable<T> Data { get; set; }
+        public int TotalPages { get; private set; }
+        public int TotalCount { get; private set; }
+        public bool HasPrevious => Page > 1;
+        public bool HasNext => Page < TotalPages;
     }
 }

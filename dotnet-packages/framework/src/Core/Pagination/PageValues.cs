@@ -2,7 +2,7 @@
 {
     public static class PageValues
     {
-        public const int PageStartIndex = 1;
+        public const int PageStart = 1;
         public const int PageSize = 15;
     }
 }

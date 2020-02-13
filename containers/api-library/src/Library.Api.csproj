@@ -19,4 +19,10 @@
     <ProjectReference Include="..\..\..\dotnet-packages\library\src\Library.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

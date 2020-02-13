@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Book.Core.Common;
 using Book.Core.Enums;
 using Book.Data;
@@ -7,9 +6,11 @@ using Book.Models.Payload;
 using Book.Models.Proxy;
 using Book.Services;
 using Book.Tests.Mocks.Entities;
-using Book.Tests.Mocks.Message;
-using Book.Tests.Mocks.Payload;
+using Book.Tests.Mocks.Models.Event;
+using Book.Tests.Mocks.Models.Message;
+using Book.Tests.Mocks.Models.Payload;
 using Book.Tests.Utils;
+using FluentAssertions;
 using Framework.Core.Config;
 using Framework.Core.Pagination;
 using Framework.Test.Common;
@@ -61,8 +62,8 @@ namespace Book.Tests.Services
             expected.Categories.Add(expectedCategory);
             entity.Should().BeEquivalentToEntity(expected);
 
-            var messageExpected = BookUpdateMessageMock.Get(key);
-            messageExpected.Id = entity.Id;
+            var messageExpected = UpdateBookEventMock.Get(key);
+
             message.Should().BeEquivalentToMessage(messageExpected);
         }
 
@@ -91,8 +92,7 @@ namespace Book.Tests.Services
             expected.AuthorName = null;
             entity.Should().BeEquivalentToEntity(expected);
 
-            var messageExpected = BookUpdateMessageMock.Get(key);
-            messageExpected.Id = entity.Id;
+            var messageExpected = UpdateBookEventMock.Get(key);
             message.Should().BeEquivalentToMessage(messageExpected);
         }
 
@@ -122,8 +122,7 @@ namespace Book.Tests.Services
             expected.AuthorName = null;
             entity.Should().BeEquivalentToEntity(expected);
 
-            var messageExpected = BookUpdateMessageMock.Get(key);
-            messageExpected.Id = entity.Id;
+            var messageExpected = UpdateBookEventMock.Get(key);
             message.Should().BeEquivalentToMessage(messageExpected);
         }
 
@@ -144,8 +143,7 @@ namespace Book.Tests.Services
             expected.Id = entity.Id;
             entity.Should().BeEquivalentToEntity(expected);
 
-            var messageExpected = BookUpdateMessageMock.Get(key);
-            messageExpected.Id = entity.Id;
+            var messageExpected = UpdateBookEventMock.Get(key);
             message.Should().BeEquivalentToMessage(messageExpected);
         }
 
@@ -174,8 +172,7 @@ namespace Book.Tests.Services
             expected.Categories.Add(expectedCategory);
             entity.Should().BeEquivalentToEntity(expected);
 
-            var messageExpected = BookUpdateMessageMock.Get(key);
-            messageExpected.Id = entity.Id;
+            var messageExpected = UpdateBookEventMock.Get(key);
             message.Should().BeEquivalentToMessage(messageExpected);
         }
 
@@ -294,7 +291,7 @@ namespace Book.Tests.Services
             var settings = Settings.Empty;
             settings.FeatureFlags.TryAdd(FeatureFlags.AddTableAtuthor, true);
 
-            var pagedProxy = GetAllAsync(settings);
+            var pagedProxy = GetAllAsync(settings: settings);
             pagedProxy.Should().NotBeNull();
 
             var entity = Db.Books.FirstOrDefault(x => x.Title == Fake.GetTitle(key));
@@ -318,7 +315,7 @@ namespace Book.Tests.Services
             var settings = Settings.Empty;
             settings.FeatureFlags.TryAdd(FeatureFlags.AddTableAtuthor, true);
 
-            var pagedProxy = GetAllAsync(settings);
+            var pagedProxy = GetAllAsync(settings: settings);
             pagedProxy.Should().NotBeNull();
 
             var entity = Db.Books.FirstOrDefault(x => x.Title == Fake.GetTitle(key));
@@ -372,12 +369,8 @@ namespace Book.Tests.Services
             pagedProxy.Should().BeEquivalentToModel(pagedProxyExpected);
         }
 
-        #endregion GetAllAsync
-
-        #region GetByFilterAsync
-
         [Fact]
-        public void GetByFilterAsync_Valid()
+        public void GetAllAsync_Filter_Title()
         {
             var keys = new string[]
             {
@@ -388,99 +381,10 @@ namespace Book.Tests.Services
             MockRepository.Add(BookMock.Get(keys[0]));
             MockRepository.Add(BookMock.Get(keys[1]));
 
-            var pagination = PagedRequestMock.Create(BookFilterPayloadMock.Get());
+            var pagination = BookFilterPayloadMock.Get();
+            pagination.Title = Fake.GetTitle(keys[0]);
 
-            var proxy = GetByFilterAsync(pagination);
-            proxy.Should().NotBeNull();
-
-            var proxy1 = BookProxyMock.Get(keys[0]);
-            var proxy2 = BookProxyMock.Get(keys[1]);
-
-            var pagedProxyExpected = PagedResponseMock.Create(proxy1, proxy2);
-            proxy.Should().BeEquivalentToModel(pagedProxyExpected);
-        }
-
-        [Fact]
-        public void GetByFilterAsync_Book_FlagTableAtuthor_WithAuthor()
-        {
-            var keys = new string[]
-            {
-                FakeHelper.Key,
-                FakeHelper.Key
-            };
-            var book1 = BookMock.Get(keys[0]);
-            book1.Author = BookAuthorMock.Get(keys[0]);
-
-            MockRepository.Add(book1);
-            MockRepository.Add(BookMock.Get(keys[1]));
-
-            var pagination = PagedRequestMock.Create(BookFilterPayloadMock.Get());
-
-            var settings = Settings.Empty;
-            settings.FeatureFlags.TryAdd(FeatureFlags.AddTableAtuthor, true);
-
-            var pagedProxy = GetByFilterAsync(pagination, settings);
-            pagedProxy.Should().NotBeNull();
-
-            var proxy = GetByFilterAsync(pagination);
-            proxy.Should().NotBeNull();
-
-            var proxy1 = BookProxyMock.Get(keys[0]);
-            var proxy2 = BookProxyMock.Get(keys[1]);
-
-            var pagedProxyExpected = PagedResponseMock.Create(proxy1, proxy2);
-            proxy.Should().BeEquivalentToModel(pagedProxyExpected);
-        }
-
-        [Fact]
-        public void GetByFilterAsync_Book_FlagTableAtuthor_WithoutAuthor()
-        {
-            var keys = new string[]
-            {
-                FakeHelper.Key,
-                FakeHelper.Key
-            };
-
-            var book1 = BookMock.Get(keys[0]);
-            book1.Author = null;
-
-            MockRepository.Add(book1);
-            MockRepository.Add(BookMock.Get(keys[1]));
-
-            var pagination = PagedRequestMock.Create(BookFilterPayloadMock.Get());
-
-            var settings = Settings.Empty;
-            settings.FeatureFlags.TryAdd(FeatureFlags.AddTableAtuthor, true);
-
-            var pagedProxy = GetByFilterAsync(pagination, settings);
-            pagedProxy.Should().NotBeNull();
-
-            var proxy = GetByFilterAsync(pagination);
-            proxy.Should().NotBeNull();
-
-            var proxy1 = BookProxyMock.Get(keys[0]);
-            var proxy2 = BookProxyMock.Get(keys[1]);
-
-            var pagedProxyExpected = PagedResponseMock.Create(proxy1, proxy2);
-            proxy.Should().BeEquivalentToModel(pagedProxyExpected);
-        }
-
-        [Fact]
-        public void GetByFilterAsync_Filter_Title()
-        {
-            var keys = new string[]
-            {
-                FakeHelper.Key,
-                FakeHelper.Key
-            };
-
-            MockRepository.Add(BookMock.Get(keys[0]));
-            MockRepository.Add(BookMock.Get(keys[1]));
-
-            var pagination = PagedRequestMock.Create(BookFilterPayloadMock.Get());
-            pagination.Filter.Title = Fake.GetTitle(keys[0]);
-
-            var proxy = GetByFilterAsync(pagination);
+            var proxy = GetAllAsync(pagination);
             proxy.Should().NotBeNull();
 
             var proxy1 = BookProxyMock.Get(keys[0]);
@@ -490,7 +394,7 @@ namespace Book.Tests.Services
         }
 
         [Fact]
-        public void GetByFilterAsync_Filter_Language()
+        public void GetAllAsync_Filter_Language()
         {
             var keys = new string[]
             {
@@ -504,10 +408,10 @@ namespace Book.Tests.Services
             MockRepository.Add(book);
             MockRepository.Add(BookMock.Get(keys[1]));
 
-            var pagination = PagedRequestMock.Create(BookFilterPayloadMock.Get());
-            pagination.Filter.Language = book.Language;
+            var pagination = BookFilterPayloadMock.Get();
+            pagination.Language = book.Language;
 
-            var proxy = GetByFilterAsync(pagination);
+            var proxy = GetAllAsync(pagination);
             proxy.Should().NotBeNull();
 
             var proxy1 = BookProxyMock.Get(keys[0]);
@@ -518,7 +422,7 @@ namespace Book.Tests.Services
         }
 
         [Fact]
-        public void GetByFilterAsync_Filter_Category()
+        public void GetAllAsync_Filter_Category()
         {
             var keys = new string[]
             {
@@ -534,10 +438,10 @@ namespace Book.Tests.Services
             MockRepository.Add(book);
             MockRepository.Add(BookMock.Get(keys[1]));
 
-            var pagination = PagedRequestMock.Create(BookFilterPayloadMock.Get());
-            pagination.Filter.Category = Fake.GetCategoryName(keys[0]);
+            var pagination = BookFilterPayloadMock.Get();
+            pagination.Category = Fake.GetCategoryName(keys[0]);
 
-            var proxy = GetByFilterAsync(pagination);
+            var proxy = GetAllAsync(pagination);
             proxy.Should().NotBeNull();
 
             var proxy1 = BookProxyMock.Get(keys[0]);
@@ -546,9 +450,9 @@ namespace Book.Tests.Services
             proxy.Should().BeEquivalentToModel(pagedProxyExpected);
         }
 
-        #endregion GetByFilterAsync
+        #endregion GetAllAsync
 
-        private BookUpdateMessage SaveAsync(BookMessage model, Settings settings = null)
+        private UpdateBookEvent SaveAsync(BookMessage model, Settings settings = null)
         {
             settings = settings ?? Settings.Empty;
 
@@ -562,7 +466,7 @@ namespace Book.Tests.Services
             var service = new BookService(Db, bus, config, TenantAccessorStub.Create());
             service.SaveAsync(model).Wait();
 
-            return bus.DequeueExchange<BookUpdateMessage>(ExchangeNames.Book);
+            return bus.DequeueExchange<UpdateBookEvent>(ExchangeNames.Book);
         }
 
         private BookProxy GetByIdAsync(Guid id, Settings settings = null)
@@ -578,8 +482,9 @@ namespace Book.Tests.Services
             return service.GetByIdAsync(id).GetAwaiter().GetResult();
         }
 
-        private PagedResponse<BookProxy> GetAllAsync(Settings settings = null)
+        private PagedResponse<BookProxy> GetAllAsync(BookFilterPayload filter = null, Settings settings = null)
         {
+            filter = filter ?? BookFilterPayloadMock.Get();
             settings = settings ?? Settings.Empty;
 
             var config = ConfigurationStub.Create(() =>
@@ -588,20 +493,7 @@ namespace Book.Tests.Services
             });
 
             var service = new BookService(Db, BusPublisherStub.Create(), config, TenantAccessorStub.Create());
-            return service.GetAllAsync(PagedRequestMock.Create()).GetAwaiter().GetResult();
-        }
-
-        private PagedResponse<BookProxy> GetByFilterAsync(PagedRequest<BookFilterPayload> pagination, Settings settings = null)
-        {
-            settings = settings ?? Settings.Empty;
-
-            var config = ConfigurationStub.Create(() =>
-            {
-                return settings;
-            });
-
-            var service = new BookService(Db, BusPublisherStub.Create(), config, TenantAccessorStub.Create());
-            return service.GetByFilterAsync(pagination).GetAwaiter().GetResult();
+            return service.GetAllAsync(filter).GetAwaiter().GetResult();
         }
     }
 }

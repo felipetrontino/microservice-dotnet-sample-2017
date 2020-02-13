@@ -31,7 +31,7 @@ namespace Bookstore.Tools.Tasks
 
             foreach (var order in orders)
             {
-                var message = new ShippingDtoMessage()
+                var message = new ShippingEventMessage()
                 {
                     OrderId = order.Id
                 };

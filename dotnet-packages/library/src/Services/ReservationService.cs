@@ -1,13 +1,10 @@
 ﻿using Framework.Core.Bus;
-using Framework.Core.Pagination;
 using Library.Core.Common;
 using Library.Core.Enums;
 using Library.Core.Interfaces;
 using Library.Data;
 using Library.Entities;
 using Library.Models.Message;
-using Library.Models.Payload;
-using Library.Models.Proxy;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -130,23 +127,6 @@ namespace Library.Services
             await _db.SaveChangesAsync();
         }
 
-        public async Task<PagedResponse<ReservationProxy>> GetByFilterAsync(PagedRequest<ReservationFilterPayload> pagination)
-        {
-            var query = _db.Reservations.AsQueryable();
-
-            query = FilterQuery(query, pagination.Filter);
-
-            return await PagedHelper.CreateAsync(query, pagination, MapEntityToProxy);
-        }
-
-        private static IQueryable<Entities.Reservation> FilterQuery(IQueryable<Reservation> query, ReservationFilterPayload filter)
-        {
-            if (filter.Number != null)
-                query = query.Where(_ => _.Number == filter.Number);
-
-            return query;
-        }
-
         private async Task<Loan> GetLoanAsync(DbLibrary db, ReservationMessage.Item item, DateTime createDate)
         {
             var ret = new Loan
@@ -161,28 +141,12 @@ namespace Library.Services
 
         private async Task SendDtoAsync(Guid id)
         {
-            var message = new ReservationDtoMessage
+            var message = new ReservationEventMessage
             {
                 ReservationId = id
             };
 
             await _bus.PublishAsync(QueueNames.Library, message);
-        }
-
-        private static ReservationProxy MapEntityToProxy(Reservation e)
-        {
-            var ret = new ReservationProxy
-            {
-                MemberId = e.Member.UserId,
-                Number = e.Number,
-                Items = e.Loans.Select(x => new ReservationProxy.Item()
-                {
-                    Number = x.Copy.Number,
-                    Name = x.Book.Title
-                }).ToList()
-            };
-
-            return ret;
         }
     }
 }

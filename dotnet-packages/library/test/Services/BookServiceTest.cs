@@ -5,7 +5,7 @@ using Library.Data;
 using Library.Models.Message;
 using Library.Services;
 using Library.Tests.Mocks.Entities;
-using Library.Tests.Mocks.Message;
+using Library.Tests.Mocks.Models.Message;
 using Library.Tests.Utils;
 using System.Linq;
 using Xunit;
@@ -24,6 +24,7 @@ namespace Library.Tests.Services
         }
 
         #region UpdateAsync
+
         [Fact]
         public void UpdateAsync_Book_Valid()
         {
@@ -66,7 +67,7 @@ namespace Library.Tests.Services
             entity.Should().BeEquivalentToEntity(expected);
         }
 
-        #endregion
+        #endregion UpdateAsync
 
         #region Utils
 
@@ -76,6 +77,6 @@ namespace Library.Tests.Services
             service.UpdateAsync(message).Wait();
         }
 
-        #endregion 
+        #endregion Utils
     }
 }

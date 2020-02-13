@@ -13,7 +13,7 @@ namespace Bookstore.Data
     {
         [ExcludeFromCodeCoverage]
         public DbBookstore(IConfiguration config, ITenantAccessor tenantAccessor, IUserAccessor userAccessor)
-           : base(ConnectionStringNames.Sql, DatabaseProvider.Postgres, config, tenantAccessor, userAccessor)
+           : base(ConnectionStringNames.Sql, DatabaseProvider.InMemory, config, tenantAccessor, userAccessor)
         {
         }
 

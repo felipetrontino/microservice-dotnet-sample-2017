@@ -1,29 +1,26 @@
-﻿using Framework.Core.Config;
-using Framework.Core.Extensions;
+﻿using Framework.Core.Extensions;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System;
-using System.Text;
 
 namespace Framework.Core.Logging.RabbitMQ
 {
     internal class RabbitClient : IDisposable
     {
-        private readonly RabbitConfig _config;
-
+        private readonly string _connectionString;
         private IConnection _connection;
         private IModel _model;
         private IBasicProperties _properties;
 
-        public RabbitClient(RabbitConfig config)
+        public RabbitClient(string connectionString)
         {
-            _config = config;
+            _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
             InitializeEndpoint();
         }
 
         private void InitializeEndpoint()
         {
-            var connectionFactory = GetConnectionFactory();
+            var connectionFactory = GetConnectionFactory(_connectionString);
             _connection = connectionFactory.CreateConnection();
             _model = _connection.CreateModel();
 
@@ -33,19 +30,12 @@ namespace Framework.Core.Logging.RabbitMQ
             _properties.DeliveryMode = 2;
         }
 
-        private IConnectionFactory GetConnectionFactory()
+        private static IConnectionFactory GetConnectionFactory(string connectionString)
         {
             var ret = new ConnectionFactory
             {
-                HostName = _config.Host,
-                Port = _config.Port.ToNInt() ?? AmqpTcpEndpoint.UseDefaultPort,
-                UserName = _config.UserName,
-                Password = _config.Password,
-                NetworkRecoveryInterval = TimeSpan.FromSeconds(2)
+                Uri = new Uri(connectionString)
             };
-
-            if (_config.VHost != null)
-                ret.VirtualHost = _config.VHost;
 
             return ret;
         }

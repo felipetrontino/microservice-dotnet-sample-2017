@@ -4,9 +4,7 @@
       "commandName": "Project",
       "environmentVariables": {
         "ASPNETCORE_APPLICATION": "library",
-        "ASPNETCORE_ENVIRONMENT": "development",
-        "APP_CONSUL": "http://cnode-dev:8500",
-        "APP_DEBUGGING": "true"
+        "ASPNETCORE_ENVIRONMENT": "development"
       }
     }
   }

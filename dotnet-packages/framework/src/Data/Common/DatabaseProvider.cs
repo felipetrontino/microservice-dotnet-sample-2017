@@ -2,8 +2,9 @@
 {
     public enum DatabaseProvider
     {
-        Mssql = 0,
+        InMemory = 0,
         Sqlite = 1,
-        Postgres = 2
+        SqlServer = 2,
+        Postgres = 3
     }
 }

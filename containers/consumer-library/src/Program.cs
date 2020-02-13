@@ -23,8 +23,8 @@ namespace Library.Consumer
         {
             var handler = ConsumerContainer.Create(QueueNames.Library)
                                             .Add<ReservationConsumer, ReservationMessage>()
-                                            .Add<ReservationDtoConsumer, ReservationDtoMessage>()
-                                            .Add<ReservationExpireConsumer, ReservationExpiredMessage>()                                           
+                                            .Add<ReservationEventConsumer, ReservationEventMessage>()
+                                            .Add<ReservationExpiredConsumer, ReservationExpiredMessage>()
                                             .Build(config);
 
             return handler.RunAsync();

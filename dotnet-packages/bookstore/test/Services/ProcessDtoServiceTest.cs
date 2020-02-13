@@ -1,12 +1,12 @@
-﻿using FluentAssertions;
-using Bookstore.Core.Common;
+﻿using Bookstore.Core.Common;
 using Bookstore.Data;
-using Bookstore.Models.Dto;
+using Bookstore.Models.Event;
 using Bookstore.Models.Message;
 using Bookstore.Services;
-using Bookstore.Tests.Mocks.Dto;
 using Bookstore.Tests.Mocks.Entities;
 using Bookstore.Tests.Mocks.Message;
+using Bookstore.Tests.Mocks.Models.Event;
+using FluentAssertions;
 using Framework.Test.Common;
 using Framework.Test.Data;
 using Framework.Test.Mock.Bus;
@@ -37,10 +37,10 @@ namespace Bookstore.Tests.Services
 
             var message = ShippingDtoMessageMock.Get(key);
 
-            var dto = CreateShippingAsync(message);
+            var dto = PublishShippingEventAsync(message);
             dto.Should().NotBeNull();
 
-            var dtoExpected = ShippingDtoMock.Get(key);
+            var dtoExpected = CreateShippingEventMock.Get(key);
             dto.Should().BeEquivalentToMessage(dtoExpected);
         }
 
@@ -48,17 +48,16 @@ namespace Bookstore.Tests.Services
 
         #region Utils
 
-        private ShippingDto CreateShippingAsync(ShippingDtoMessage message)
+        private CreateShippingEvent PublishShippingEventAsync(ShippingEventMessage message)
         {
             var bus = BusPublisherStub.Create();
 
-            var service = new ProcessDtoService(Db, bus);
-            service.CreateShippingAsync(message).Wait();
+            var service = new PublishEventService(Db, bus);
+            service.PublishShippingEventAsync(message).Wait();
 
-            return bus.DequeueExchange<ShippingDto>(ExchangeNames.DTO);
+            return bus.DequeueExchange<CreateShippingEvent>(ExchangeNames.Bookstore);
         }
 
         #endregion Utils
-
     }
 }

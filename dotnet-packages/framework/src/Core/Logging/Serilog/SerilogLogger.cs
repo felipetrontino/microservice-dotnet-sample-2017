@@ -1,4 +1,5 @@
 ﻿using Framework.Core.Config;
+using Framework.Core.Extensions;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 using Serilog.Core;
@@ -74,10 +75,10 @@ namespace Framework.Core.Logging.Serilog
 
         private void Configure(IConfiguration config)
         {
-            _logger = config == null ? GetLogger() : GetLogger(RabbitConfig.Get(config, ConnectionStringNames.Rabbit));
+            _logger = GetLogger(config);
         }
 
-        private static ILogger GetLogger(RabbitConfig rabbitConfig = null)
+        private static ILogger GetLogger(IConfiguration config)
         {
             SelfLog.Enable(Console.Out);
 
@@ -86,8 +87,10 @@ namespace Framework.Core.Logging.Serilog
 
             configuration.WriteTo.Console(LogEventLevel.Verbose, "[{Timestamp:dd/MM/yyyy HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}");
 
-            if (rabbitConfig != null && !Debugger.IsAttached)
-                configuration.WriteTo.RabbitMQ(rabbitConfig, Configuration.Debugging.Get() ? LogEventLevel.Information : LogEventLevel.Warning);
+            var connectionStringRabbit = Settings.GetInstance(config).ConnectionStrings.GetOrDefault(ConnectionStringNames.Rabbit);
+
+            if (connectionStringRabbit != null && !Debugger.IsAttached)
+                configuration.WriteTo.RabbitMQ(connectionStringRabbit, Configuration.Debugging.Get() ? LogEventLevel.Information : LogEventLevel.Warning);
 
             configuration.Enrich.FromLogContext();
 

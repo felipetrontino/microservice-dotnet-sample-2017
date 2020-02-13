@@ -41,20 +41,26 @@ namespace Framework.Core.Config
             return new ConfigurationBuilder().PrepareBuilder().Build();
         }
 
-        public static IConfigurationBuilder PrepareBuilder(this IConfigurationBuilder configurationBuilder)
+        public static IConfigurationBuilder PrepareBuilder(this IConfigurationBuilder config)
         {
-            var url = KVServerUrl.Get();
             var audience = Audience.Get();
             var stage = StageName.Get();
+            var url = KVServerUrl.Get();
 
             if (url != null)
             {
                 var path = audience != null ? $"{audience}/{stage}" : stage;
-
-                configurationBuilder.AddConsul(url, path, true, true);
+                config.AddConsul(url, path, true, true);
+            }
+            else
+            {
+                config.AddJsonFile("appsettings.json", true, true)
+                      .AddJsonFile($"appsettings.{Stage.Get().GetName().ToLower()}.json", true, true);
             }
 
-            return configurationBuilder;
+            config.AddEnvironmentVariables();
+
+            return config;
         }
 
         private static class EnvironmentVariables

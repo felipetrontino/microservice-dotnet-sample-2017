@@ -13,12 +13,14 @@ namespace Library.Data
     {
         [ExcludeFromCodeCoverage]
         public DbLibrary(IConfiguration config, ITenantAccessor tenantAccessor, IUserAccessor userAccessor)
-          : base(ConnectionStringNames.Sql, DatabaseProvider.Postgres, config, tenantAccessor, userAccessor)
+          : base(ConnectionStringNames.Sql, DatabaseProvider.InMemory, config, tenantAccessor, userAccessor)
         {
         }
+
         public DbLibrary(DbContextOptions options, ITenantAccessor tenantAccessor, IUserAccessor userAccessor)
            : base(options, tenantAccessor, userAccessor)
         { }
+
         public DbSet<Book> Books { get; set; }
 
         public DbSet<Copy> Copies { get; set; }

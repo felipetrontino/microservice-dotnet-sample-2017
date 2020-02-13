@@ -6,7 +6,7 @@ namespace Framework.Test.Mock.Pagination
     {
         public static PagedResponse<TProxy> Create<TProxy>(params TProxy[] values)
         {
-            return new PagedResponse<TProxy>(values);
+            return values.ToPagedResponse();
         }
     }
 }
